@@ -1,10 +1,12 @@
 import type { ActionFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { Form, useActionData } from '@remix-run/react';
+import { MatchList } from '~/components/MatchList';
 import {
   getMatchDetailsByMatchId,
   getMatchHistoryByPUUID,
   getPUUIDBySummonerName,
 } from '~/utils/riot.server';
+import { MatchDetails } from '~/utils/types';
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,10 +31,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const puuid = await getPUUIDBySummonerName(summonerName, summonerTag);
   const matchData = await getMatchHistoryByPUUID(puuid);
-  const matchDetails = await getMatchDetailsByMatchId(matchData[0]);
-
+  const matchDetails: MatchDetails[] = [];
+  for (const matchId of matchData) {
+    const match = await getMatchDetailsByMatchId(matchId);
+    matchDetails.push(match);
+  }
   return {
-    summonerData: puuid,
+    puuid: puuid,
     matchData: matchData,
     matchDetails: matchDetails,
   };
@@ -40,7 +45,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
   const actionData = useActionData() as unknown as {
-    summonerData: string;
+    puuid: string;
     matchData: string[];
     matchDetails: {
       metadata: {
@@ -48,9 +53,7 @@ export default function Index() {
       };
     };
   };
-  console.log({
-    actionData,
-  });
+
   return (
     <div className='font-sans p-4'>
       <Form method='POST' className='flex flex-col gap-2'>
@@ -72,6 +75,14 @@ export default function Index() {
           Search
         </button>
       </Form>
+      {actionData?.matchDetails && (
+        <div>
+          <MatchList
+            userPuuid={actionData.puuid}
+            matchDetails={actionData.matchDetails as unknown as MatchDetails[]}
+          />
+        </div>
+      )}
     </div>
   );
 }

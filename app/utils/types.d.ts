@@ -351,6 +351,6 @@ export interface Baron {
 
 export interface Metadata {
   dataVersion: string;
-  matchID: string;
+  matchId: string;
   participants: string[];
 }
