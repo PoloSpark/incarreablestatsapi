@@ -2,6 +2,7 @@ import { MatchDetails } from './types';
 
 // obtener la API KEY de Riot desde el entorno
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
+export const PUUID = process.env.PUUID;
 
 if (!RIOT_API_KEY) {
   throw new Error('RIOT_API_KEY is not set');
