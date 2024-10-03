@@ -15,12 +15,16 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@prisma/client": "^5.20.0",
     "@remix-run/cloudflare": "^2.11.1",
     "@remix-run/cloudflare-pages": "^2.11.1",
     "@remix-run/react": "^2.11.1",
     "isbot": "^4.1.0",
+    "prisma": "^5.20.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240903.0",

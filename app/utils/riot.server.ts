@@ -24,6 +24,8 @@ export async function getPUUIDBySummonerName(
   );
 
   const data = (await response.json()) as { puuid: string };
+
+  console.log(data);
   return data.puuid;
 }
 

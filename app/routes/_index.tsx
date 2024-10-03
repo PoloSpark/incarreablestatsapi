@@ -7,6 +7,7 @@ import {
   getPUUIDBySummonerName,
 } from '~/utils/riot.server';
 import { MatchDetails } from '~/utils/types';
+import { prisma } from '~/db.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -30,6 +31,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   const puuid = await getPUUIDBySummonerName(summonerName, summonerTag);
+  console.log(puuid)
+  await prisma.user.create({
+    data: {
+      riotPuuid: puuid,
+      summonerName: summonerName,
+      summonerTag: summonerTag,
+    }
+  });
   const matchData = await getMatchHistoryByPUUID(puuid);
   const matchDetails: MatchDetails[] = [];
   for (const matchId of matchData) {
@@ -42,6 +51,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     matchDetails: matchDetails,
   };
 };
+
+export const loader = async () => {
+  const users = await prisma.user.findMany();
+  console.log(users)
+  return users;
+}
 
 export default function Index() {
   const actionData = useActionData() as unknown as {
